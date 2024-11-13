@@ -3,7 +3,6 @@ package com.example.novelasfragmentoswidget.ui.Almacenamiento;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-
 import com.example.novelasfragmentoswidget.ui.GestionNovelas.Novela;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -14,24 +13,29 @@ import java.util.List;
 //Clase que se encarga de gestionar las preferencias de la aplicación del usuario
 public class PreferencesManager {
 
+    //Variables
     private static final String PREF_NAME = "user_preferences";
     private static final String KEY_NOVELAS = "novelas";
     private SharedPreferences sharedPreferences;
     private Gson gson;
 
+    //Constructor
     public PreferencesManager(Context context) {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         gson = new Gson();
     }
 
+    //Metodo para guardar las novelas
     public void saveNovelas(List<Novela> novelas) {
         new SaveNovelasTask().execute(novelas);
     }
 
+    //Metodo para cargar las novelas
     public void loadNovelas(LoadNovelasCallback callback) {
         new LoadNovelasTask(callback).execute();
     }
 
+    //Clase interna SaveNovelasTask que extiende AsyncTask y guarda las novelas en segundo plano
     private class SaveNovelasTask extends AsyncTask<List<Novela>, Void, Void> {
         @Override
         protected Void doInBackground(List<Novela>... lists) {
@@ -44,6 +48,7 @@ public class PreferencesManager {
         }
     }
 
+    //Clase interna LoadNovelasTask que extiende AsyncTask y carga las novelas en segundo plano
     private class LoadNovelasTask extends AsyncTask<Void, Void, List<Novela>> {
         private LoadNovelasCallback callback;
 
@@ -64,6 +69,7 @@ public class PreferencesManager {
         }
     }
 
+    //Interfaz LoadNovelasCallback para manejar la carga de novelas
     public interface LoadNovelasCallback {
         void onNovelasLoaded(List<Novela> novelas);
     }

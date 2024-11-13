@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -15,23 +16,31 @@ import com.example.novelasfragmentoswidget.ui.GestionNovelas.Novela;
 import com.example.novelasfragmentoswidget.ui.Almacenamiento.PreferencesManager;
 import java.util.List;
 
+//Clase DetallesNovelasFragment que representa el fragmento que muestra los detalles de una novela
 public class DetallesNovelasFragment extends Fragment implements PreferencesManager.LoadNovelasCallback {
 
+    //Variables
     private Novela novela;
     private PreferencesManager preferencesManager;
 
+    //Metodo para crear la vista del fragmento
     @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        //Inflar el layout para este fragmento
         View view = inflater.inflate(R.layout.fragment_detalles_novela, container, false);
         TextView textViewTitulo = view.findViewById(R.id.textViewTituloDetalle);
         TextView textViewAutor = view.findViewById(R.id.textViewAutorDetalle);
         TextView textViewAño = view.findViewById(R.id.textViewAñoDetalle);
         TextView textViewSinopsis = view.findViewById(R.id.textViewSinopsisDetalle);
+        CheckBox checkBoxFavorito = view.findViewById(R.id.checkbox_favorito);
 
+        //Instanciar el PreferencesManager
         preferencesManager = new PreferencesManager(requireContext());
 
+        //Obtener la novela seleccionada y mostrar sus detalles
         if (getArguments() != null) {
             novela = getArguments().getParcelable("novela");
             if (novela != null) {
@@ -39,14 +48,17 @@ public class DetallesNovelasFragment extends Fragment implements PreferencesMana
                 textViewAutor.setText(novela.getAutor());
                 textViewAño.setText(String.valueOf(novela.getAñoPublicacion()));
                 textViewSinopsis.setText(novela.getSinopsis());
+                checkBoxFavorito.setChecked(novela.getFavorito());
             }
         }
 
-        view.findViewById(R.id.btn_favorito).setOnClickListener(v -> {
-            novela.setFavorito(!novela.getFavorito());
+        //Checkbox para marcar como favorito
+        checkBoxFavorito.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            novela.setFavorito(isChecked);
             preferencesManager.loadNovelas(this);
         });
 
+        //Boton para volver a la lista de novelas
         view.findViewById(R.id.btn_volver).setOnClickListener(v -> {
             getActivity().getSupportFragmentManager().popBackStack();
         });
@@ -54,6 +66,7 @@ public class DetallesNovelasFragment extends Fragment implements PreferencesMana
         return view;
     }
 
+    //Metodo para gestionar el checkbox de favoritos
     @Override
     public void onNovelasLoaded(List<Novela> loadedNovelas) {
         for (Novela n : loadedNovelas) {

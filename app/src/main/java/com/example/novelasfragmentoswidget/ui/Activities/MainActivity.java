@@ -25,40 +25,44 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
+//Clase MainActivity que representa la actividad principal de la aplicacion
 public class MainActivity extends AppCompatActivity implements PreferencesManager.LoadNovelasCallback {
 
+    //Variables
     private List<Novela> novelas;
-    private NovelaAdapter adapter;
     private FirebaseHelper firebaseHelper;
     private PreferencesManager preferencesManager;
     private boolean showingFavorites = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Instanciar el PreferencesManager
         preferencesManager = new PreferencesManager(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Instanciar el FirebaseHelper y cargar las novelas
         firebaseHelper = new FirebaseHelper();
         preferencesManager.loadNovelas(this);
 
-        // Set up buttons
+        //Inicializar los botones de la actividad
         findViewById(R.id.btn_agregar).setOnClickListener(v -> mostrarDialogoAñadirNovela());
         findViewById(R.id.btn_eliminar).setOnClickListener(v -> mostrarDialogoEliminarNovela());
         findViewById(R.id.btn_cambiar_lista).setOnClickListener(v -> cambiarLista());
 
-        // Load the main list fragment at startup
+        //Cargamos el fragmento de la lista de novelas al iniciar la actividad
         loadFragment(new ListaNovelasFragment(), "Lista de Novelas");
     }
 
+    //Metodo para gestionar la carga de las novelas
     @Override
     public void onNovelasLoaded(List<Novela> loadedNovelas) {
         novelas = loadedNovelas;
         actualizarFragmentos();
     }
 
-    // Method to load a fragment with a title
+    //Metodo para cargar un fragmento en el contenedor de fragmentos
     private void loadFragment(Fragment fragment, String title) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -68,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         setTitle(title);
     }
 
-    // Method to switch between the main list and favorites list
+    //metodo para cambiar entre la lista de novelas y la lista de favoritas
     private void cambiarLista() {
         if (showingFavorites) {
             loadFragment(new ListaNovelasFragment(), "Lista de Novelas");
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         showingFavorites = !showingFavorites;
     }
 
+    //Metodo para mostrar un dialogo para añadir una novela a la lista
     private void mostrarDialogoAñadirNovela() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -94,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         builder.create().show();
     }
 
+    //Metodo para mostrar un dialogo para eliminar una novela de la lista
     private void mostrarDialogoEliminarNovela() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -110,7 +116,10 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         builder.create().show();
     }
 
+    //Metodo para añadir una novela a la lista
     private void añadirNovelaLista(String titulo) {
+
+        //Bucle para comprobar si la novela ya está en la lista
         for (Novela novela : novelas) {
             if (novela.getTitulo().equalsIgnoreCase(titulo)) {
                 Toast.makeText(MainActivity.this, "La novela ya está en la lista", Toast.LENGTH_SHORT).show();
@@ -118,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
             }
         }
 
+        //Si la novela no está en la lista, se carga desde Firebase y se añade a la lista
         firebaseHelper.cargarNovelas(titulo, new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -125,9 +135,11 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
                     for (DataSnapshot novelaSnapshot : snapshot.getChildren()) {
                         Novela novela = novelaSnapshot.getValue(Novela.class);
                         if (novela != null) {
+                            novela.setFavorito(false);
                             novelas.add(novela);
                             preferencesManager.saveNovelas(novelas);
                             actualizarFragmentos();
+                            Toast.makeText(MainActivity.this, "Novela añadida a la lista", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } else {
@@ -142,8 +154,12 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         });
     }
 
+    //Metodo para eliminar una novela de la lista
     private void eliminarNovelaLista(String titulo) {
+
+        //Bucle para buscar la novela en la lista y eliminarla
         for (Novela novela : novelas) {
+            //Si la novela se encuentra en la lista, se elimina y se actualizan las listas
             if (novela.getTitulo().equalsIgnoreCase(titulo)) {
                 novelas.remove(novela);
                 preferencesManager.saveNovelas(novelas);
@@ -155,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         Toast.makeText(MainActivity.this, "Novela no encontrada en la lista", Toast.LENGTH_SHORT).show();
     }
 
+    //Metodo para actualizar los fragmentos
     private void actualizarFragmentos() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (fragment instanceof ListaNovelasFragment) {
@@ -164,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         }
     }
 
+    //Metodo para mostrar los detalles de una novela al hacer clic en ella
     public void mostrarDetallesNovela(Novela novela) {
         DetallesNovelasFragment fragment = new DetallesNovelasFragment();
         Bundle args = new Bundle();

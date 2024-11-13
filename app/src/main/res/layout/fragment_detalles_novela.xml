@@ -23,7 +23,7 @@
         android:layout_below="@id/titulo"
         android:layout_marginTop="0dp"
         android:layout_marginLeft="15dp"
-        android:text="Aquí puedes consultar la información de la novela"
+        android:text="Aquí puedes ver la información de la novela"
         android:textSize="15sp"
         android:textStyle="bold"
         android:textColor="@color/teal_700" />
@@ -39,31 +39,40 @@
 
         <TextView
             android:id="@+id/textViewTituloDetalle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
+            android:textSize="30sp"
             android:textStyle="bold"
-            android:layout_marginTop="50dp" />
+            android:text="Titulo"
+            android:layout_marginTop="50dp"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/textViewAutorDetalle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_marginTop="50dp"/>
+            android:textSize="22sp"
+            android:text="Autor"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp" />
 
         <TextView
             android:id="@+id/textViewAñoDetalle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_marginTop="50dp"/>
+            android:textSize="22sp"
+            android:text="Año"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp" />
 
         <TextView
             android:id="@+id/textViewSinopsisDetalle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"/>
+            android:textSize="22sp"
+            android:text="Sinopsis"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp" />
 
     </LinearLayout>
 
@@ -85,15 +94,13 @@
             android:background="@color/teal_700"
             android:textColor="@color/white" />
 
-        <Button
-            android:id="@+id/btn_favorito"
-            android:layout_width="0dp"
+        <CheckBox
+            android:id="@+id/checkbox_favorito"
+            android:layout_width="170dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="15dp"
+            android:layout_marginStart="20dp"
             android:text="Favorito"
-            android:background="@color/teal_700"
-            android:textColor="@color/white"/>
+            android:textSize="20sp" />
 
     </LinearLayout>
 

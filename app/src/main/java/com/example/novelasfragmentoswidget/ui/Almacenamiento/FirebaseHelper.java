@@ -1,7 +1,6 @@
 package com.example.novelasfragmentoswidget.ui.Almacenamiento;
 
 import android.os.AsyncTask;
-
 import com.example.novelasfragmentoswidget.ui.GestionNovelas.Novela;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

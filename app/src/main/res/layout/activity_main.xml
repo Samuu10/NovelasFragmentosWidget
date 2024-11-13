@@ -42,7 +42,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:text="Cambiar"
+            android:text="Cambiar Lista"
             android:textColor="@color/teal_700" />
     </LinearLayout>
 </RelativeLayout>
