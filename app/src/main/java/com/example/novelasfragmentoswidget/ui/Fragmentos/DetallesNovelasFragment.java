@@ -1,6 +1,7 @@
 package com.example.novelasfragmentoswidget.ui.Fragmentos;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import com.example.novelasfragmentoswidget.R;
 import com.example.novelasfragmentoswidget.ui.GestionNovelas.Novela;
 import com.example.novelasfragmentoswidget.ui.Almacenamiento.PreferencesManager;
+import com.example.novelasfragmentoswidget.ui.Widget.WidgetUpdateService;
+
 import java.util.List;
 
 //Clase DetallesNovelasFragment que representa el fragmento que muestra los detalles de una novela
@@ -55,7 +58,18 @@ public class DetallesNovelasFragment extends Fragment implements PreferencesMana
         //Checkbox para marcar como favorito
         checkBoxFavorito.setOnCheckedChangeListener((buttonView, isChecked) -> {
             novela.setFavorito(isChecked);
-            preferencesManager.loadNovelas(this);
+            preferencesManager.loadNovelas(new PreferencesManager.LoadNovelasCallback() {
+                @Override
+                public void onNovelasLoaded(List<Novela> loadedNovelas) {
+                    for (Novela n : loadedNovelas) {
+                        if (n.equals(novela)) {
+                            n.setFavorito(novela.getFavorito());
+                            break;
+                        }
+                    }
+                    preferencesManager.saveNovelas(loadedNovelas);
+                }
+            });
         });
 
         //Boton para volver a la lista de novelas

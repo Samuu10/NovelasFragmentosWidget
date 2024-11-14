@@ -55,6 +55,13 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         loadFragment(new ListaNovelasFragment(), "Lista de Novelas");
     }
 
+    //Metodo para gestionar la navegacion hacia atras
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
     //Metodo para gestionar la carga de las novelas
     @Override
     public void onNovelasLoaded(List<Novela> loadedNovelas) {
