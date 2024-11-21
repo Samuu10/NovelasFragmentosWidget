@@ -1,10 +1,10 @@
-## GESTIÓN NOVELAS AVANZADO CON FRAGMENTOS Y WIDGETS
+## GESTIÓN NOVELAS AVANZADO CON FRAGMENTOS Y WIDGETS + OPTIMIZACIÓN
 
 # Objetivo
 
 El objetivo del proyecto es ampliar la funcionalidad de las prácticas anteriores de Gestion de Novelas.
-En este caso se pedía implemnetar la app con fragmentos para crear interfaces de usuario modulares y mejorar el rendimiento de la app.
-También se pedía el uso de widgets para permitir la interacción desde la pantalla de inicio del dispositivo.
+Una vez implementados los fragmentos y el widget de la aplicación, se busca optimizar la aplicación haciendo uso del Profiler de Android Studio 
+para identificar posibles optimizaciones de memoria, de red y de batería.
 
 # Firebase
 
