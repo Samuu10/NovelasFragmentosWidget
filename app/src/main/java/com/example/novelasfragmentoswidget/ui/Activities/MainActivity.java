@@ -196,4 +196,24 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         fragment.setArguments(args);
         loadFragment(fragment, "Detalles de la Novela");
     }
+
+    //Metodo para gestionar la destruccion de la actividad y liberar recursos para optimizar la memoria
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //Liberar referencias a objetos grandes o contextos
+        firebaseHelper = null;
+        preferencesManager = null;
+        novelas = null;
+    }
+
+    //Metodo para gestionar la pausa de la actividad y liberar recursos para optimizar la memoria
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //Liberar referencias a vistas o adaptadores
+        findViewById(R.id.btn_agregar).setOnClickListener(null);
+        findViewById(R.id.btn_eliminar).setOnClickListener(null);
+        findViewById(R.id.btn_cambiar_lista).setOnClickListener(null);
+    }
 }
