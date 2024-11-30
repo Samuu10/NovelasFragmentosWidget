@@ -92,6 +92,16 @@ permitiendo que las novelas se sincronicen y persistan a través de diferentes s
     - Gestiona la actualización del widget en segundo plano.
     - Carga las novelas favoritas y actualiza el widget.
 
+14. **BitmapConfig**:
+    - Configura y decodifica Bitmaps de manera eficiente.
+    - Proporciona un método para decodificar un Bitmap de recursos con un tamaño específico.
+    - Calcula el tamaño de muestra adecuado para decodificar el Bitmap.
+
+15. **BrilloReceiver**:
+    - Ajusta el brillo de la pantalla en función del porcentaje de batería.
+    - Escucha los cambios en el estado de la batería y ajusta el brillo en consecuencia.
+    - Verifica y solicita permisos para modificar los ajustes del sistema antes de ajustar el brillo.
+
 # Archivos XML
 
 1. **activity_main.xml**:
