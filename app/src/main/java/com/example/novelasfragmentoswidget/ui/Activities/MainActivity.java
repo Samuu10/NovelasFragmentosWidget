@@ -2,7 +2,10 @@ package com.example.novelasfragmentoswidget.ui.Activities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -19,7 +22,7 @@ import com.example.novelasfragmentoswidget.ui.Fragmentos.DetallesNovelasFragment
 import com.example.novelasfragmentoswidget.ui.Fragmentos.ListaFavoritasFragment;
 import com.example.novelasfragmentoswidget.ui.Fragmentos.ListaNovelasFragment;
 import com.example.novelasfragmentoswidget.ui.GestionNovelas.Novela;
-import com.example.novelasfragmentoswidget.ui.GestionNovelas.NovelaAdapter;
+import com.example.novelasfragmentoswidget.ui.Optimizacion.BrilloReceiver;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
     private FirebaseHelper firebaseHelper;
     private PreferencesManager preferencesManager;
     private boolean showingFavorites = false;
+    private BrilloReceiver brilloReceiver;
+    private static final int REQUEST_CODE_WRITE_SETTINGS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +58,16 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
 
         //Cargamos el fragmento de la lista de novelas al iniciar la actividad
         loadFragment(new ListaNovelasFragment(), "Lista de Novelas");
+
+        //Solicitamos el permiso para modificar los ajustes del sistema
+        if (!Settings.System.canWrite(this)) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, REQUEST_CODE_WRITE_SETTINGS);
+        } else {
+            //Registramos el BroadcastReceiver
+            registerBrilloReceiver();
+        }
     }
 
     //Metodo para gestionar la navegacion hacia atras
@@ -197,14 +212,27 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         loadFragment(fragment, "Detalles de la Novela");
     }
 
-    //Metodo para gestionar la destrucción de la actividad y liberar recursos para optimizar la memoria
+    //Metodo para gestionar la respuesta de la solicitud de permisos
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //Liberar referencias a objetos grandes o contextos
-        firebaseHelper = null;
-        preferencesManager = null;
-        novelas = null;
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_WRITE_SETTINGS) {
+            if (Settings.System.canWrite(this)) {
+                //Permiso concedido
+                Toast.makeText(this, "Permiso concedido para modificar los ajustes del sistema", Toast.LENGTH_SHORT).show();
+                // Registrar el BroadcastReceiver
+                registerBrilloReceiver();
+            } else {
+                //Permiso denegado
+                Toast.makeText(this, "Permiso denegado para modificar los ajustes del sistema", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    //Metodo para registrar el BroadcastReceiver
+    private void registerBrilloReceiver() {
+        brilloReceiver = new BrilloReceiver();
+        registerReceiver(brilloReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
     //Metodo para gestionar la pausa de la actividad y liberar recursos para optimizar la memoria
@@ -215,5 +243,20 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         findViewById(R.id.btn_agregar).setOnClickListener(null);
         findViewById(R.id.btn_eliminar).setOnClickListener(null);
         findViewById(R.id.btn_cambiar_lista).setOnClickListener(null);
+    }
+
+    //Metodo para gestionar la destrucción de la actividad y liberar recursos para optimizar la memoria
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //Liberar referencias a objetos grandes o contextos
+        firebaseHelper = null;
+        preferencesManager = null;
+        novelas = null;
+
+        //Desregistrar el BroadcastReceiver
+        if(brilloReceiver != null) {
+            unregisterReceiver(brilloReceiver);
+        }
     }
 }
