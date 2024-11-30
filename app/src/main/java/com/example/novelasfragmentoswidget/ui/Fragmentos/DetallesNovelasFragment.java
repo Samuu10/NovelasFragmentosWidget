@@ -92,4 +92,12 @@ public class DetallesNovelasFragment extends Fragment implements PreferencesMana
         preferencesManager.saveNovelas(loadedNovelas);
         Toast.makeText(getContext(), novela.getFavorito() ? "Añadida a favoritos" : "Eliminada de favoritos", Toast.LENGTH_SHORT).show();
     }
+
+    //Metodo para gestionar la pausa del fragmento y liberar recursos
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //Liberar referencias a objetos grandes o contextos
+        preferencesManager = null;
+    }
 }

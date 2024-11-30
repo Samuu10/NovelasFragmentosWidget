@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements PreferencesManage
         loadFragment(fragment, "Detalles de la Novela");
     }
 
-    //Metodo para gestionar la destruccion de la actividad y liberar recursos para optimizar la memoria
+    //Metodo para gestionar la destrucción de la actividad y liberar recursos para optimizar la memoria
     @Override
     protected void onDestroy() {
         super.onDestroy();

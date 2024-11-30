@@ -56,4 +56,20 @@ public class ListaNovelasFragment extends Fragment implements PreferencesManager
             adapter.notifyDataSetChanged();
         }
     }
+
+    //Metodo para gestionar la pausa del fragmento y liberar recursos
+    @Override
+    public void onStop() {
+        super.onStop();
+        //Liberar referencias a vistas o adaptadores
+        recyclerView.setAdapter(null);
+    }
+
+    //Metodo para gestionar la destrucción del fragmento y liberar recursos
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //Liberar referencias a objetos grandes o contextos
+        preferencesManager = null;
+    }
 }
